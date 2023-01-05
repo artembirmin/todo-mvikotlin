@@ -83,9 +83,10 @@ dependencies {
     implementation "com.github.terrakok:cicerone:7.1"
 
     // RxJava
-    implementation 'io.reactivex.rxjava3:rxjava:3.1.4'
+    implementation 'io.reactivex.rxjava3:rxjava:3.1.5'
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
     implementation 'com.jakewharton.rxbinding4:rxbinding:4.0.0'
+    implementation 'io.reactivex.rxjava3:rxkotlin:3.0.1'
 
     // Timber
     implementation 'com.jakewharton.timber:timber:5.0.1'
@@ -118,6 +119,16 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
     implementation "com.squareup.retrofit2:adapter-rxjava3:$retrofitVersion"
     implementation 'com.squareup.okhttp3:logging-interceptor:4.3.1'
+
+    // MVIKotlin
+    def mviKotlinVersion = '3.0.2'
+    implementation "com.arkivanov.mvikotlin:mvikotlin:$mviKotlinVersion"
+    implementation "com.arkivanov.mvikotlin:mvikotlin-main:$mviKotlinVersion"
+    implementation "com.arkivanov.mvikotlin:mvikotlin-logging :$mviKotlinVersion"
+    implementation "com.arkivanov.mvikotlin:mvikotlin-timetravel :$mviKotlinVersion"
+    implementation "com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines:$mviKotlinVersion"
+    implementation "com.arkivanov.mvikotlin:mvikotlin-extensions-reaktive:$mviKotlinVersion"
+    implementation "com.arkivanov.mvikotlin:rx:$mviKotlinVersion"
 
     // Permissions
     implementation 'com.github.tbruyelle:rxpermissions:0.12'
