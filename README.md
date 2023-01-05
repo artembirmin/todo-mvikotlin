@@ -1,1 +1,1 @@
-# project-template-android
+# Todo app using MVIKotlin

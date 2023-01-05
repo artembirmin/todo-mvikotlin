@@ -19,7 +19,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.incetro.projecttemplate"
+        applicationId "com.incetro.todomvikotlin"
         minSdk 24
         targetSdk 32
         versionCode 1
@@ -64,7 +64,7 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    namespace 'com.incetro.projecttemplate'
+    namespace 'com.incetro.todomvikotlin'
 }
 
 dependencies {

@@ -22,5 +22,5 @@ dependencyResolutionManagement {
         jcenter()
     }
 }
-rootProject.name = "projecttemplate"
+rootProject.name = "todomvikotlin"
 include ':app'
