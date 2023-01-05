@@ -34,7 +34,7 @@ interface TaskComponent {
         createAndSave = {
             val componentManager = ComponentsManager.getInstance()
             val activityComponent = ActivityComponent.Manager.getComponent()
-            val component = DaggerDemoComponent.builder()
+            val component = DaggerTaskComponent.builder()
                 .activityComponent(activityComponent)
                 .build()
             componentManager.addComponent(component)

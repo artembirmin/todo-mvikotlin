@@ -15,7 +15,7 @@ import com.incetro.todomvikotlin.common.di.scope.ActivityScope
 import com.incetro.todomvikotlin.common.manager.ResourcesManager
 import com.incetro.todomvikotlin.common.navigation.AppRouter
 import com.incetro.todomvikotlin.model.database.AppDatabase
-import com.incetro.todomvikotlin.model.database.demo.DemoDao
+import com.incetro.todomvikotlin.model.database.task.TaskDao
 import dagger.Component
 
 @ActivityScope
@@ -36,7 +36,7 @@ interface ActivityComponent {
 
     // Database module
     fun provideAppDatabase(): AppDatabase
-    fun provideDemoDao(): DemoDao
+    fun provideDemoDao(): TaskDao
 
     // Other
     fun provideResourcesManager(): ResourcesManager

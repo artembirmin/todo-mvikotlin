@@ -10,12 +10,12 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.incetro.todomvikotlin.BuildConfig
-import com.incetro.todomvikotlin.model.database.demo.DemoDao
-import com.incetro.todomvikotlin.model.database.demo.DemoDto
+import com.incetro.todomvikotlin.entity.task.Task
+import com.incetro.todomvikotlin.model.database.task.TaskDao
 
 @Database(
     entities = [
-        DemoDto::class,
+        Task::class,
     ],
     version = AppDatabase.VERSION
 )
@@ -24,8 +24,8 @@ abstract class AppDatabase : RoomDatabase() {
 
     companion object {
         const val DB_NAME = BuildConfig.DB_NAME
-        const val VERSION = 31
+        const val VERSION = 1
     }
 
-    abstract fun demoDao(): DemoDao
+    abstract fun taskDao(): TaskDao
 }
