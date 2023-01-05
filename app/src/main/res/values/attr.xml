@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Ruvpro
+  ~
+  ~ Created by artembirmin on 1/5/2022.
+  -->
+
+<resources>
+    <attr name="ToolbarColor" format="color" />
+    <attr name="ScreenBackgroundColor" format="color" />
+    <attr name="iconColor" format="color" />
+</resources>
