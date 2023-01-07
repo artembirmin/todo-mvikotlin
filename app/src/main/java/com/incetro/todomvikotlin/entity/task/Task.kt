@@ -6,20 +6,25 @@
 
 package com.incetro.todomvikotlin.entity.task
 
+import android.os.Parcelable
+import androidx.annotation.ColorRes
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.incetro.todomvikotlin.entity.task.Task.Companion.TABLE_NAME
+import kotlinx.parcelize.Parcelize
 
 @Entity(
     tableName = TABLE_NAME
 )
+@Parcelize
 data class Task(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val name: String,
     val attemptsMadeCount: Int,
-    val attemptsRequiredCount: Int
-) {
+    val attemptsRequiredCount: Int,
+    @ColorRes val color: Int
+) : Parcelable {
     companion object {
         const val TABLE_NAME = "task"
     }

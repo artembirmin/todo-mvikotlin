@@ -12,6 +12,7 @@ import com.incetro.todomvikotlin.model.database.task.TaskDao
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Single
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @FeatureScope
@@ -20,6 +21,10 @@ class TaskRepositoryImpl @Inject constructor(
 ) : TaskRepository {
     override fun observeTasks(): Flowable<List<Task>> {
         return taskDao.observe()
+    }
+
+    override fun refreshTasks(): Completable {
+        return Completable.timer(2000, TimeUnit.MILLISECONDS)
     }
 
     override fun getTaskById(id: Int): Single<Task> {

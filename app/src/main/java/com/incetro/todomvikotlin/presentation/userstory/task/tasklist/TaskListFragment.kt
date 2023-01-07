@@ -8,51 +8,55 @@ package com.incetro.todomvikotlin.presentation.userstory.task.tasklist
 
 import android.os.Bundle
 import android.view.View
-import androidx.recyclerview.widget.GridLayoutManager
+import com.arkivanov.essenty.lifecycle.doOnDestroy
+import com.arkivanov.essenty.lifecycle.essentyLifecycle
+import com.arkivanov.mvikotlin.core.binder.BinderLifecycleMode
 import com.incetro.todomvikotlin.R
+import com.incetro.todomvikotlin.common.mvirxjava.bind
+import com.incetro.todomvikotlin.common.mvirxjava.events
+import com.incetro.todomvikotlin.common.mvirxjava.states
+import com.incetro.todomvikotlin.common.navigation.AppRouter
 import com.incetro.todomvikotlin.databinding.FragmentTaskListBinding
+import com.incetro.todomvikotlin.model.store.tasklist.TaskStoreStoreFactory
+import com.incetro.todomvikotlin.model.store.tasklist.TodoListStore
 import com.incetro.todomvikotlin.presentation.base.fragment.BaseFragment
 import com.incetro.todomvikotlin.presentation.userstory.task.di.TaskComponent
-import moxy.presenter.InjectPresenter
-import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 
-class TaskListFragment : BaseFragment<FragmentTaskListBinding>(), TaskListView {
+class TaskListFragment : BaseFragment<FragmentTaskListBinding>() {
 
     override val layoutRes = R.layout.fragment_task_list
     private val taskListAdapter by lazy { TaskListAdapter() }
 
     @Inject
-    @InjectPresenter
-    lateinit var presenter: TaskListPresenter
+    lateinit var router: AppRouter
 
-    @ProvidePresenter
-    fun providePresenter(): TaskListPresenter = presenter
+    @Inject
+    lateinit var taskStoreStoreFactory: TaskStoreStoreFactory
+
+    private lateinit var todoListStore: TodoListStore
 
     override fun inject() = TaskComponent.Manager.getComponent().inject(this)
     override fun release() = TaskComponent.Manager.releaseComponent()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val taskListView = TaskListView(binding)
+        todoListStore = taskStoreStoreFactory.create()
+        val lifecycle = viewLifecycleOwner.essentyLifecycle()
+        lifecycle.doOnDestroy { todoListStore.dispose() }
 
-        initViews()
-    }
-
-    private fun initViews() {
-        with(binding) {
-            rvTaskList.layoutManager = GridLayoutManager(context, 2)
-            rvTaskList.adapter = taskListAdapter
-            val items = mutableListOf<TaskViewItem>().apply {
-                repeat(10) {
-                    add(TaskViewItem())
-                }
-            }
-            taskListAdapter.items = items
+        bind(lifecycle, BinderLifecycleMode.CREATE_DESTROY) {
+            taskListView.events bindTo todoListStore
+        }
+        bind(lifecycle, BinderLifecycleMode.START_STOP) {
+            todoListStore.states bindTo taskListView
         }
     }
 
+
     override fun onBackPressed() {
-        presenter.onBackPressed()
+        router.exit()
     }
 
     companion object {

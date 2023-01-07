@@ -15,4 +15,5 @@ interface TaskRepository {
     fun observeTasks(): Flowable<List<Task>>
     fun getTaskById(id: Int): Single<Task>
     fun saveNewTask(task: Task): Completable
+    fun refreshTasks(): Completable
 }
