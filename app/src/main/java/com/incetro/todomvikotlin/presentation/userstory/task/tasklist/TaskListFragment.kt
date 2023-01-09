@@ -17,8 +17,7 @@ import com.incetro.todomvikotlin.common.mvirxjava.events
 import com.incetro.todomvikotlin.common.mvirxjava.states
 import com.incetro.todomvikotlin.common.navigation.AppRouter
 import com.incetro.todomvikotlin.databinding.FragmentTaskListBinding
-import com.incetro.todomvikotlin.model.store.tasklist.TaskStoreStoreFactory
-import com.incetro.todomvikotlin.model.store.tasklist.TodoListStore
+import com.incetro.todomvikotlin.model.store.tasklist.TaskListStore
 import com.incetro.todomvikotlin.presentation.base.fragment.BaseFragment
 import com.incetro.todomvikotlin.presentation.userstory.task.di.TaskComponent
 import javax.inject.Inject
@@ -26,34 +25,30 @@ import javax.inject.Inject
 class TaskListFragment : BaseFragment<FragmentTaskListBinding>() {
 
     override val layoutRes = R.layout.fragment_task_list
-    private val taskListAdapter by lazy { TaskListAdapter() }
 
     @Inject
     lateinit var router: AppRouter
 
     @Inject
-    lateinit var taskStoreStoreFactory: TaskStoreStoreFactory
-
-    private lateinit var todoListStore: TodoListStore
+    override lateinit var store: TaskListStore
 
     override fun inject() = TaskComponent.Manager.getComponent().inject(this)
     override fun release() = TaskComponent.Manager.releaseComponent()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val taskListView = TaskListView(binding)
-        todoListStore = taskStoreStoreFactory.create()
+        val mviView = TaskListView(binding)
         val lifecycle = viewLifecycleOwner.essentyLifecycle()
-        lifecycle.doOnDestroy { todoListStore.dispose() }
+        lifecycle.doOnDestroy { store.dispose() }
 
         bind(lifecycle, BinderLifecycleMode.CREATE_DESTROY) {
-            taskListView.events bindTo todoListStore
+            mviView.events bindTo store
         }
-        bind(lifecycle, BinderLifecycleMode.START_STOP) {
-            todoListStore.states bindTo taskListView
+        bind(lifecycle, BinderLifecycleMode.CREATE_DESTROY) {
+            store.states bindTo mviView
         }
-    }
 
+    }
 
     override fun onBackPressed() {
         router.exit()

@@ -6,7 +6,6 @@
 
 package com.incetro.todomvikotlin.common.mvirxjava
 
-import android.webkit.ValueCallback
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.mvikotlin.core.binder.Binder
 import com.arkivanov.mvikotlin.core.binder.BinderLifecycleMode
@@ -63,7 +62,7 @@ interface RxJavaBindingsBuilder {
      * Creates a binding between this [Observable] and the provided `consumer`
      *
      * @receiver a stream of values
-     * @param consumer a `consumer` of values represented as [ValueCallback]
+     * @param consumer a `consumer` of values represented as [Consumer]
      */
     infix fun <T : Any> Observable<T>.bindTo(consumer: Consumer<T>)
 
