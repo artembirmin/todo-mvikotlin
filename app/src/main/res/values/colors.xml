@@ -17,4 +17,7 @@
     <color name="blue_light">#007AFF</color>
     <color name="gray_icons">#AEAEB2</color>
     <color name="gray_main_background">#F2F2F6</color>
+    <color name="black_transparent_20">#33000000</color>
+    <color name="gray_200">#F0F0F0</color>
+    <color name="transparent">#00FFFFFF</color>
 </resources>

@@ -16,10 +16,18 @@ import androidx.annotation.StringRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import com.arkivanov.essenty.lifecycle.doOnCreate
+import com.arkivanov.essenty.lifecycle.essentyLifecycle
+import com.arkivanov.mvikotlin.core.binder.BinderLifecycleMode
+import com.arkivanov.mvikotlin.core.store.Store
 import com.incetro.todomvikotlin.app.AppActivity
 import com.incetro.todomvikotlin.common.di.componentmanager.ComponentManager
 import com.incetro.todomvikotlin.common.di.componentmanager.ComponentsStore
+import com.incetro.todomvikotlin.common.mvibase.CommonLabel
+import com.incetro.todomvikotlin.common.mvirxjava.bind
+import com.incetro.todomvikotlin.common.mvirxjava.labels
 import com.incetro.todomvikotlin.entity.errors.AppError
+import com.incetro.todomvikotlin.presentation.LoadingIndicator
 import com.incetro.todomvikotlin.presentation.base.BaseView
 import com.incetro.todomvikotlin.presentation.base.messageshowing.ErrorHandler
 import moxy.MvpAppCompatFragment
@@ -46,6 +54,10 @@ abstract class BaseFragment<Binding : ViewDataBinding> : MvpAppCompatFragment(),
      */
     private var isInstanceStateSaved: Boolean = false
 
+    private val loadingIndicator: LoadingIndicator by lazy { LoadingIndicator(requireActivity()) }
+
+    abstract val store: Store<*, *, CommonLabel>
+
     /**
      * Does dependency injection.
      * Use [ComponentManager] implementation in dagger component and call [ComponentManager.getComponent].
@@ -68,6 +80,24 @@ abstract class BaseFragment<Binding : ViewDataBinding> : MvpAppCompatFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         super.onCreate(savedInstanceState)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val lifecycle = viewLifecycleOwner.essentyLifecycle()
+        bind(lifecycle, BinderLifecycleMode.CREATE_DESTROY) {
+            store.labels bindTo ::onCommonLabel
+        }
+        lifecycle.doOnCreate { store.init() }
+    }
+
+    private fun onCommonLabel(commonLabel: CommonLabel) {
+        when (commonLabel) {
+            is CommonLabel.ShowMessageByToast -> showMessageByToast(commonLabel.message)
+            is CommonLabel.HideLoading -> hideProgress()
+            is CommonLabel.ShowLoading -> showProgress()
+            is CommonLabel.ShowError -> showError(commonLabel.error)
+        }
     }
 
     override fun onCreateView(
@@ -118,6 +148,7 @@ abstract class BaseFragment<Binding : ViewDataBinding> : MvpAppCompatFragment(),
     }
 
     override fun showError(error: AppError) {
+        hideProgress()
         errorHandler.showError(error, requireContext())
     }
 
@@ -148,5 +179,18 @@ abstract class BaseFragment<Binding : ViewDataBinding> : MvpAppCompatFragment(),
 
     override fun showMessageByToast(message: String, duration: Int) {
         Toast.makeText(requireContext(), message, duration).show()
+    }
+
+
+    fun showProgress() {
+        loadingIndicator.show()
+    }
+
+    fun hideProgress() {
+        loadingIndicator.dismiss()
+    }
+
+    fun hideProgressForce() {
+        loadingIndicator.forceDismiss()
     }
 }

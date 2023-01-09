@@ -25,6 +25,7 @@ class TaskRepositoryImpl @Inject constructor(
 
     override fun refreshTasks(): Completable {
         return Completable.timer(2000, TimeUnit.MILLISECONDS)
+            .concatWith(Completable.error(Exception("MVP был лучше")))
     }
 
     override fun getTaskById(id: Int): Single<Task> {

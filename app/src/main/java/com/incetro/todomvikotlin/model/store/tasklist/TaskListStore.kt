@@ -17,7 +17,6 @@ import com.incetro.todomvikotlin.model.store.tasklist.TaskListStore.*
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.schedulers.Schedulers
-import timber.log.Timber
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -66,11 +65,9 @@ class TaskListStoreExecutor @Inject constructor(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe {
-                Timber.d("111LOADING publish (CommonLabel.ShowLoading)")
                 publish(CommonLabel.ShowLoading)
             }
             .doOnComplete {
-                Timber.d("111LOADING publish (CommonLabel.HideLoading) ")
                 publish(CommonLabel.HideLoading)
             }
             .subscribeBy(

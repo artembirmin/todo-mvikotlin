@@ -10,4 +10,5 @@ sealed class CommonLabel {
     object ShowLoading : CommonLabel()
     object HideLoading : CommonLabel()
     data class ShowError(val error: Throwable) : CommonLabel()
+    data class ShowMessageByToast(val message: String) : CommonLabel()
 }
