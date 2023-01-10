@@ -17,7 +17,6 @@ import com.incetro.todomvikotlin.common.mvirxjava.events
 import com.incetro.todomvikotlin.common.mvirxjava.states
 import com.incetro.todomvikotlin.common.navigation.AppRouter
 import com.incetro.todomvikotlin.databinding.FragmentTaskListBinding
-import com.incetro.todomvikotlin.model.store.tasklist.TaskListStore
 import com.incetro.todomvikotlin.presentation.base.fragment.BaseFragment
 import com.incetro.todomvikotlin.presentation.userstory.task.di.TaskComponent
 import javax.inject.Inject

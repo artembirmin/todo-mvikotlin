@@ -11,8 +11,8 @@ import com.arkivanov.mvikotlin.core.utils.diff
 import com.arkivanov.mvikotlin.core.view.BaseMviView
 import com.arkivanov.mvikotlin.core.view.ViewRenderer
 import com.incetro.todomvikotlin.databinding.FragmentTaskListBinding
-import com.incetro.todomvikotlin.model.store.tasklist.TaskListStore.Intent
-import com.incetro.todomvikotlin.model.store.tasklist.TaskListStore.State
+import com.incetro.todomvikotlin.presentation.userstory.task.tasklist.TaskListStore.Intent
+import com.incetro.todomvikotlin.presentation.userstory.task.tasklist.TaskListStore.State
 
 
 class TaskListView(binding: FragmentTaskListBinding) :
