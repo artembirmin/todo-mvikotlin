@@ -10,9 +10,12 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.incetro.todomvikotlin.common.di.scope.FeatureScope
 import com.incetro.todomvikotlin.common.mvibase.CommonLabel
+import com.incetro.todomvikotlin.common.mvibase.NavigationLabel
 import com.incetro.todomvikotlin.common.mvirxjava.RxJavaExecutor
+import com.incetro.todomvikotlin.common.navigation.Screens
 import com.incetro.todomvikotlin.entity.task.Task
 import com.incetro.todomvikotlin.model.repository.TaskRepository
+import com.incetro.todomvikotlin.presentation.userstory.task.taskinfo.TaskInfoFragmentInitParams
 import com.incetro.todomvikotlin.presentation.userstory.task.tasklist.TaskListStore.*
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.subscribeBy
@@ -34,6 +37,10 @@ abstract class TaskListStore : Store<Intent, State, CommonLabel> {
     data class State(
         val items: List<Task> = emptyList()
     )
+
+    companion object {
+        val NAME = TaskListStore::class.simpleName
+    }
 }
 
 @FeatureScope
@@ -56,7 +63,13 @@ class TaskListStoreExecutor @Inject constructor(
     override fun executeIntent(intent: Intent, getState: () -> State) {
         when (intent) {
             is Intent.OnAddTaskClick -> createNewRandomTask()
-            is Intent.OnTaskClick -> publish(CommonLabel.ShowMessageByToast("On click ${intent.task.name}"))
+            is Intent.OnTaskClick -> publish(
+                NavigationLabel.NavigateTo(
+                    Screens.TaskInfoScreen(
+                        TaskInfoFragmentInitParams(intent.task.id)
+                    )
+                )
+            )
         }
     }
 

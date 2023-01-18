@@ -1,10 +1,10 @@
 /*
  * todomvikotlin
  *
- * Created by artembirmin on 5/1/2023.
+ * Created by artembirmin on 10/1/2023.
  */
 
-package com.incetro.todomvikotlin.presentation.userstory.task.tasklist
+package com.incetro.todomvikotlin.presentation.userstory.task.taskinfo
 
 import android.os.Bundle
 import android.view.View
@@ -20,23 +20,35 @@ import com.incetro.todomvikotlin.common.mvirxjava.bind
 import com.incetro.todomvikotlin.common.mvirxjava.createStoreSimple
 import com.incetro.todomvikotlin.common.mvirxjava.events
 import com.incetro.todomvikotlin.common.mvirxjava.states
-import com.incetro.todomvikotlin.databinding.FragmentTaskListBinding
+import com.incetro.todomvikotlin.common.navigation.getInitParams
+import com.incetro.todomvikotlin.common.navigation.provideInitParams
+import com.incetro.todomvikotlin.databinding.FragmentTaskInfoBinding
 import com.incetro.todomvikotlin.presentation.base.fragment.BaseFragment
 import com.incetro.todomvikotlin.presentation.userstory.task.di.TaskComponent
+import com.incetro.todomvikotlin.presentation.userstory.task.taskinfo.TaskInfoStore.Intent
+import com.incetro.todomvikotlin.presentation.userstory.task.taskinfo.TaskInfoStore.State
 import javax.inject.Inject
 
-class TaskListFragment : BaseFragment<FragmentTaskListBinding>() {
 
-    override val layoutRes = R.layout.fragment_task_list
+class TaskInfoFragment : BaseFragment<FragmentTaskInfoBinding>() {
 
-    override lateinit var store: TaskListStore
+    override val layoutRes = R.layout.fragment_task_info
+
+    private val initParams by lazy { getInitParams<TaskInfoFragmentInitParams>() }
+
+    override lateinit var store: TaskInfoStore
 
     override fun inject() = TaskComponent.Manager.getComponent().inject(this)
-    override fun release() = TaskComponent.Manager.releaseComponent()
+    override fun release() = Unit
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val mviView = TaskListView(binding)
+        initMvi()
+    }
+
+    // Pull up
+    private fun initMvi() {
+        val mviView = TaskInfoView(binding)
         val lifecycle = viewLifecycleOwner.essentyLifecycle()
         lifecycle.doOnDestroy { store.dispose() }
 
@@ -51,15 +63,14 @@ class TaskListFragment : BaseFragment<FragmentTaskListBinding>() {
     @Inject
     fun createStore(
         storeFactory: StoreFactory,
-        reducer: TaskListStoreReducer,
-        executor: TaskListStoreExecutor
+        reducer: TaskInfoStoreReducer,
+        executor: TaskInfoStoreExecutor
     ) {
         store = storeInstanceKeeper.getStore {
-            object : TaskListStore(),
-                Store<TaskListStore.Intent, TaskListStore.State, CommonLabel>
-                by storeFactory.createStoreSimple(
-                    name = TaskListStore.NAME,
-                    initialState = TaskListStore.State(),
+            object : TaskInfoStore(),
+                Store<Intent, State, CommonLabel> by storeFactory.createStoreSimple(
+                    name = TaskInfoStore.NAME,
+                    initialState = State(taskId = initParams.id),
                     reducer = reducer,
                     executor = executor
                 ) {}
@@ -71,6 +82,7 @@ class TaskListFragment : BaseFragment<FragmentTaskListBinding>() {
     }
 
     companion object {
-        fun newInstance() = TaskListFragment()
+        fun newInstance(initParams: TaskInfoFragmentInitParams) =
+            TaskInfoFragment().provideInitParams(initParams) as TaskInfoFragment
     }
 }

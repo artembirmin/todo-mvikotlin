@@ -16,6 +16,7 @@ import androidx.annotation.StringRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import com.arkivanov.essenty.instancekeeper.instanceKeeper
 import com.arkivanov.essenty.lifecycle.doOnCreate
 import com.arkivanov.essenty.lifecycle.essentyLifecycle
 import com.arkivanov.mvikotlin.core.binder.BinderLifecycleMode
@@ -24,8 +25,10 @@ import com.incetro.todomvikotlin.app.AppActivity
 import com.incetro.todomvikotlin.common.di.componentmanager.ComponentManager
 import com.incetro.todomvikotlin.common.di.componentmanager.ComponentsStore
 import com.incetro.todomvikotlin.common.mvibase.CommonLabel
+import com.incetro.todomvikotlin.common.mvibase.NavigationLabel
 import com.incetro.todomvikotlin.common.mvirxjava.bind
 import com.incetro.todomvikotlin.common.mvirxjava.labels
+import com.incetro.todomvikotlin.common.navigation.AppRouter
 import com.incetro.todomvikotlin.entity.errors.AppError
 import com.incetro.todomvikotlin.presentation.LoadingIndicator
 import com.incetro.todomvikotlin.presentation.base.BaseView
@@ -46,6 +49,9 @@ abstract class BaseFragment<Binding : ViewDataBinding> : MvpAppCompatFragment(),
     @Inject
     lateinit var errorHandler: ErrorHandler
 
+    @Inject
+    lateinit var router: AppRouter
+
     /** Layout id from res/layout. */
     abstract val layoutRes: Int
 
@@ -57,6 +63,8 @@ abstract class BaseFragment<Binding : ViewDataBinding> : MvpAppCompatFragment(),
     private val loadingIndicator: LoadingIndicator by lazy { LoadingIndicator(requireActivity()) }
 
     abstract val store: Store<*, *, CommonLabel>
+
+    protected val storeInstanceKeeper by lazy { instanceKeeper() }
 
     /**
      * Does dependency injection.
@@ -86,18 +94,30 @@ abstract class BaseFragment<Binding : ViewDataBinding> : MvpAppCompatFragment(),
         super.onViewCreated(view, savedInstanceState)
         val lifecycle = viewLifecycleOwner.essentyLifecycle()
         bind(lifecycle, BinderLifecycleMode.CREATE_DESTROY) {
-            store.labels bindTo ::onCommonLabel
+            store.labels bindTo ::handleCommonLabel
         }
         lifecycle.doOnCreate { store.init() }
     }
 
-    private fun onCommonLabel(commonLabel: CommonLabel) {
+    private fun handleCommonLabel(commonLabel: CommonLabel) {
         when (commonLabel) {
+            is NavigationLabel -> handleNavigationLabel(commonLabel)
             is CommonLabel.ShowMessageByToast -> showMessageByToast(commonLabel.message)
             is CommonLabel.HideLoading -> hideProgress()
             is CommonLabel.ShowLoading -> showProgress()
             is CommonLabel.ShowError -> showError(commonLabel.error)
         }
+    }
+
+    private fun handleNavigationLabel(navigationLabel: NavigationLabel) {
+        when (navigationLabel) {
+            is NavigationLabel.BackTo -> router.backTo(navigationLabel.screen)
+            is NavigationLabel.Exit -> router.exit()
+            is NavigationLabel.NavigateTo -> router.navigateTo(navigationLabel.screen)
+            is NavigationLabel.NewRootScreen -> router.newRootScreen(navigationLabel.screen)
+            is NavigationLabel.ReplaceScreen -> router.replaceScreen(navigationLabel.screen)
+        }
+
     }
 
     override fun onCreateView(

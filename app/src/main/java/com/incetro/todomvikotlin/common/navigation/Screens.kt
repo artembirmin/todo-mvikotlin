@@ -9,14 +9,21 @@
 package com.incetro.todomvikotlin.common.navigation
 
 import com.github.terrakok.cicerone.androidx.FragmentScreen
+import com.incetro.todomvikotlin.presentation.userstory.task.taskinfo.TaskInfoFragment
+import com.incetro.todomvikotlin.presentation.userstory.task.taskinfo.TaskInfoFragmentInitParams
 import com.incetro.todomvikotlin.presentation.userstory.task.tasklist.TaskListFragment
 
 /**
  * App screens for navigation with Cicerone.
  */
 object Screens {
-    fun DemoScreen(): FragmentScreen =
+    fun TaskListScreen(): FragmentScreen =
         FragmentScreen("TaskListScreen") {
             TaskListFragment.newInstance()
+        }
+
+    fun TaskInfoScreen(initParams: TaskInfoFragmentInitParams): FragmentScreen =
+        FragmentScreen("TaskInfoScreen") {
+            TaskInfoFragment.newInstance(initParams)
         }
 }

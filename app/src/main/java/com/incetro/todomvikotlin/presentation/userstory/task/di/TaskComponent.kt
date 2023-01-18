@@ -10,6 +10,7 @@ import com.incetro.todomvikotlin.common.di.activity.ActivityComponent
 import com.incetro.todomvikotlin.common.di.componentmanager.ComponentManager
 import com.incetro.todomvikotlin.common.di.componentmanager.ComponentsManager
 import com.incetro.todomvikotlin.common.di.scope.FeatureScope
+import com.incetro.todomvikotlin.presentation.userstory.task.taskinfo.TaskInfoFragment
 import com.incetro.todomvikotlin.presentation.userstory.task.tasklist.TaskListFragment
 import dagger.Component
 
@@ -22,6 +23,7 @@ import dagger.Component
 )
 interface TaskComponent {
     fun inject(tasksFragment: TaskListFragment)
+    fun inject(taskInfoFragment: TaskInfoFragment)
 
     @Component.Builder
     interface Builder {

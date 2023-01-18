@@ -16,6 +16,6 @@ class AppLauncher(
      *  Initialized and launches application.
      */
     fun start() {
-        router.newRootScreen(Screens.DemoScreen())
+        router.newRootScreen(Screens.TaskListScreen())
     }
 }

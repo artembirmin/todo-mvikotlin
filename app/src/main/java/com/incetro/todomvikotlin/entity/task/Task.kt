@@ -20,10 +20,10 @@ import kotlinx.parcelize.Parcelize
 data class Task(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val name: String,
-    val attemptsMadeCount: Int,
-    val attemptsRequiredCount: Int,
-    @ColorRes val color: Int
+    val name: String = "",
+    val attemptsMadeCount: Int = 0,
+    val attemptsRequiredCount: Int = 0,
+    @ColorRes val color: Int = 0
 ) : Parcelable {
     companion object {
         const val TABLE_NAME = "task"
