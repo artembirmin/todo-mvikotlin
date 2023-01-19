@@ -8,11 +8,9 @@ package com.incetro.todomvikotlin.presentation.userstory.task.taskinfo
 
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
-import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.incetro.todomvikotlin.common.di.scope.FeatureScope
 import com.incetro.todomvikotlin.common.mvibase.CommonLabel
 import com.incetro.todomvikotlin.common.mvirxjava.RxJavaExecutor
-import com.incetro.todomvikotlin.common.mvirxjava.createStore
 import com.incetro.todomvikotlin.entity.task.Task
 import com.incetro.todomvikotlin.model.repository.TaskRepository
 import com.incetro.todomvikotlin.presentation.userstory.task.taskinfo.TaskInfoStore.*
@@ -25,7 +23,7 @@ import javax.inject.Inject
 abstract class TaskInfoStore : Store<Intent, State, CommonLabel> {
 
     companion object {
-        val NAME = TaskInfoStore::class.simpleName
+        val NAME = TaskInfoStore::class.simpleName!!
     }
 
     sealed class Intent {
@@ -43,23 +41,6 @@ abstract class TaskInfoStore : Store<Intent, State, CommonLabel> {
 }
 
 @FeatureScope
-class TaskInfoFactory @Inject constructor(
-    private val storeFactory: StoreFactory,
-    private val executor: TaskInfoStoreExecutor,
-    private val reducer: TaskInfoStoreReducer
-) {
-    fun create(initParams: TaskInfoFragmentInitParams): TaskInfoStore {
-        return object : TaskInfoStore(),
-            Store<Intent, State, CommonLabel> by storeFactory.createStore(
-                name = "TaskInfoStore",
-                initialState = State(taskId = initParams.id),
-                reducer = reducer,
-                executor = executor
-            ) {}
-    }
-}
-
-@FeatureScope
 class TaskInfoStoreReducer @Inject constructor() : Reducer<State, Message> {
     override fun State.reduce(msg: Message): State =
         when (msg) {
@@ -67,7 +48,6 @@ class TaskInfoStoreReducer @Inject constructor() : Reducer<State, Message> {
         }
 }
 
-@FeatureScope
 class TaskInfoStoreExecutor @Inject constructor(
     private val taskRepository: TaskRepository
 ) : RxJavaExecutor<Intent, Unit, State, Message, CommonLabel>() {

@@ -16,6 +16,7 @@ import androidx.annotation.StringRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.instanceKeeper
 import com.arkivanov.essenty.lifecycle.doOnCreate
 import com.arkivanov.essenty.lifecycle.essentyLifecycle
@@ -64,7 +65,10 @@ abstract class BaseFragment<Binding : ViewDataBinding> : MvpAppCompatFragment(),
 
     abstract val store: Store<*, *, CommonLabel>
 
+    abstract val storeName: String
+
     protected val storeInstanceKeeper by lazy { instanceKeeper() }
+    private var isStoreInit = false
 
     /**
      * Does dependency injection.
@@ -90,14 +94,42 @@ abstract class BaseFragment<Binding : ViewDataBinding> : MvpAppCompatFragment(),
         super.onCreate(savedInstanceState)
     }
 
+    @Inject
+    lateinit var initInstanceKeeper: InstanceKeeper
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val lifecycle = viewLifecycleOwner.essentyLifecycle()
         bind(lifecycle, BinderLifecycleMode.CREATE_DESTROY) {
             store.labels bindTo ::handleCommonLabel
         }
-        lifecycle.doOnCreate { store.init() }
+
+        lifecycle.doOnCreate {
+            store.init(storeInstanceKeeper)
+        }
     }
+
+    private fun Store<*, *, *>.init(instanceKeeper: InstanceKeeper) {
+        val key = storeName
+        if (instanceKeeper.get(key = key) == null) {
+            instanceKeeper.put(key = key, instance = StoreInstance(this@init))
+            init()
+        }
+    }
+
+    inline fun <reified T : Store<*, *, *>> InstanceKeeper.getStore(): T? {
+        val key = storeName
+        return (get(key = key) as? StoreInstance<*>)?.store as T?
+    }
+
+    class StoreInstance<out T : Store<*, *, *>>(
+        val store: T
+    ) : InstanceKeeper.Instance {
+        override fun onDestroy() {
+            store.dispose()
+        }
+    }
+
 
     private fun handleCommonLabel(commonLabel: CommonLabel) {
         when (commonLabel) {
@@ -143,6 +175,7 @@ abstract class BaseFragment<Binding : ViewDataBinding> : MvpAppCompatFragment(),
         super.onDestroy()
         if (needCloseScope()) {
             release()
+            initInstanceKeeper.remove(store)
         }
     }
 

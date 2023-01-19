@@ -6,6 +6,8 @@
 
 package com.incetro.todomvikotlin.presentation.userstory.task.di
 
+import com.arkivanov.essenty.instancekeeper.InstanceKeeper
+import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.logging.store.LoggingStoreFactory
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
@@ -31,6 +33,12 @@ abstract class TaskModule {
             return if (BuildConfig.DEBUG)
                 LoggingStoreFactory(delegate = TimeTravelStoreFactory())
             else DefaultStoreFactory()
+        }
+
+        @Provides
+        @FeatureScope
+        fun provideInitInstanceKeeper(): InstanceKeeper {
+            return InstanceKeeperDispatcher()
         }
     }
 }

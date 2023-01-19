@@ -8,10 +8,8 @@ package com.incetro.todomvikotlin.presentation.userstory.task.tasklist
 
 import android.os.Bundle
 import android.view.View
-import com.arkivanov.essenty.lifecycle.doOnDestroy
 import com.arkivanov.essenty.lifecycle.essentyLifecycle
 import com.arkivanov.mvikotlin.core.binder.BinderLifecycleMode
-import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.incetro.todomvikotlin.R
@@ -30,6 +28,7 @@ class TaskListFragment : BaseFragment<FragmentTaskListBinding>() {
     override val layoutRes = R.layout.fragment_task_list
 
     override lateinit var store: TaskListStore
+    override val storeName = TaskListStore.NAME
 
     override fun inject() = TaskComponent.Manager.getComponent().inject(this)
     override fun release() = TaskComponent.Manager.releaseComponent()
@@ -38,7 +37,6 @@ class TaskListFragment : BaseFragment<FragmentTaskListBinding>() {
         super.onViewCreated(view, savedInstanceState)
         val mviView = TaskListView(binding)
         val lifecycle = viewLifecycleOwner.essentyLifecycle()
-        lifecycle.doOnDestroy { store.dispose() }
 
         bind(lifecycle, BinderLifecycleMode.CREATE_DESTROY) {
             mviView.events bindTo store
@@ -54,8 +52,8 @@ class TaskListFragment : BaseFragment<FragmentTaskListBinding>() {
         reducer: TaskListStoreReducer,
         executor: TaskListStoreExecutor
     ) {
-        store = storeInstanceKeeper.getStore {
-            object : TaskListStore(),
+        store = storeInstanceKeeper.getStore() as? TaskListStore
+            ?: object : TaskListStore(),
                 Store<TaskListStore.Intent, TaskListStore.State, CommonLabel>
                 by storeFactory.createStoreSimple(
                     name = TaskListStore.NAME,
@@ -63,7 +61,6 @@ class TaskListFragment : BaseFragment<FragmentTaskListBinding>() {
                     reducer = reducer,
                     executor = executor
                 ) {}
-        }
     }
 
     override fun onBackPressed() {

@@ -39,7 +39,7 @@ abstract class TaskListStore : Store<Intent, State, CommonLabel> {
     )
 
     companion object {
-        val NAME = TaskListStore::class.simpleName
+        val NAME = TaskListStore::class.simpleName!!
     }
 }
 

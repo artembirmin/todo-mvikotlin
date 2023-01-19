@@ -8,10 +8,8 @@ package com.incetro.todomvikotlin.presentation.userstory.task.taskinfo
 
 import android.os.Bundle
 import android.view.View
-import com.arkivanov.essenty.lifecycle.doOnDestroy
 import com.arkivanov.essenty.lifecycle.essentyLifecycle
 import com.arkivanov.mvikotlin.core.binder.BinderLifecycleMode
-import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.incetro.todomvikotlin.R
@@ -37,6 +35,7 @@ class TaskInfoFragment : BaseFragment<FragmentTaskInfoBinding>() {
     private val initParams by lazy { getInitParams<TaskInfoFragmentInitParams>() }
 
     override lateinit var store: TaskInfoStore
+    override val storeName = TaskInfoStore.NAME
 
     override fun inject() = TaskComponent.Manager.getComponent().inject(this)
     override fun release() = Unit
@@ -50,7 +49,6 @@ class TaskInfoFragment : BaseFragment<FragmentTaskInfoBinding>() {
     private fun initMvi() {
         val mviView = TaskInfoView(binding)
         val lifecycle = viewLifecycleOwner.essentyLifecycle()
-        lifecycle.doOnDestroy { store.dispose() }
 
         bind(lifecycle, BinderLifecycleMode.CREATE_DESTROY) {
             mviView.events bindTo store
@@ -66,16 +64,16 @@ class TaskInfoFragment : BaseFragment<FragmentTaskInfoBinding>() {
         reducer: TaskInfoStoreReducer,
         executor: TaskInfoStoreExecutor
     ) {
-        store = storeInstanceKeeper.getStore {
-            object : TaskInfoStore(),
+        store = storeInstanceKeeper.getStore() as? TaskInfoStore
+            ?: object : TaskInfoStore(),
                 Store<Intent, State, CommonLabel> by storeFactory.createStoreSimple(
                     name = TaskInfoStore.NAME,
                     initialState = State(taskId = initParams.id),
                     reducer = reducer,
                     executor = executor
                 ) {}
-        }
     }
+
 
     override fun onBackPressed() {
         router.exit()
