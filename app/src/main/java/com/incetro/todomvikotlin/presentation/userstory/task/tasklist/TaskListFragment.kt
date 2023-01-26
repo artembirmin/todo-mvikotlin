@@ -20,14 +20,14 @@ import com.incetro.todomvikotlin.common.mvirxjava.createStoreSimple
 import com.incetro.todomvikotlin.common.mvirxjava.events
 import com.incetro.todomvikotlin.common.mvirxjava.states
 import com.incetro.todomvikotlin.databinding.FragmentTaskListBinding
-import com.incetro.todomvikotlin.presentation.base.fragment.BaseFragment
+import com.incetro.todomvikotlin.presentation.base.fragment.BaseStoreFragment
 import com.incetro.todomvikotlin.presentation.userstory.task.di.TaskComponent
 import com.incetro.todomvikotlin.presentation.userstory.task.tasklist.TaskListStore.Intent
 import com.incetro.todomvikotlin.presentation.userstory.task.tasklist.TaskListStore.State
 import timber.log.Timber
 import javax.inject.Inject
 
-class TaskListFragment : BaseFragment<FragmentTaskListBinding>() {
+class TaskListFragment : BaseStoreFragment<FragmentTaskListBinding>() {
 
     override val layoutRes = R.layout.fragment_task_list
 

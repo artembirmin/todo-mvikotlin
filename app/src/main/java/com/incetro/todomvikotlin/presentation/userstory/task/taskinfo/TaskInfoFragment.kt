@@ -22,7 +22,7 @@ import com.incetro.todomvikotlin.common.mvirxjava.states
 import com.incetro.todomvikotlin.common.navigation.getInitParams
 import com.incetro.todomvikotlin.common.navigation.provideInitParams
 import com.incetro.todomvikotlin.databinding.FragmentTaskInfoBinding
-import com.incetro.todomvikotlin.presentation.base.fragment.BaseFragment
+import com.incetro.todomvikotlin.presentation.base.fragment.BaseStoreFragment
 import com.incetro.todomvikotlin.presentation.userstory.task.di.TaskComponent
 import com.incetro.todomvikotlin.presentation.userstory.task.taskinfo.TaskInfoStore.Intent
 import com.incetro.todomvikotlin.presentation.userstory.task.taskinfo.TaskInfoStore.State
@@ -30,7 +30,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 
-class TaskInfoFragment : BaseFragment<FragmentTaskInfoBinding>() {
+class TaskInfoFragment : BaseStoreFragment<FragmentTaskInfoBinding>() {
 
     override val layoutRes = R.layout.fragment_task_info
 
