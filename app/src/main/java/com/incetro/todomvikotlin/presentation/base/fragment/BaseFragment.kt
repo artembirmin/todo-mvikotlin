@@ -8,6 +8,7 @@ package com.incetro.todomvikotlin.presentation.base.fragment
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,9 +18,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
-import com.arkivanov.essenty.instancekeeper.instanceKeeper
 import com.arkivanov.essenty.lifecycle.doOnCreate
 import com.arkivanov.essenty.lifecycle.essentyLifecycle
+import com.arkivanov.essenty.statekeeper.stateKeeper
 import com.arkivanov.mvikotlin.core.binder.BinderLifecycleMode
 import com.arkivanov.mvikotlin.core.store.Store
 import com.incetro.todomvikotlin.app.AppActivity
@@ -34,7 +35,9 @@ import com.incetro.todomvikotlin.entity.errors.AppError
 import com.incetro.todomvikotlin.presentation.LoadingIndicator
 import com.incetro.todomvikotlin.presentation.base.BaseView
 import com.incetro.todomvikotlin.presentation.base.messageshowing.ErrorHandler
+import com.incetro.todomvikotlin.utils.ext.mvi.removeStore
 import moxy.MvpAppCompatFragment
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -67,8 +70,10 @@ abstract class BaseFragment<Binding : ViewDataBinding> : MvpAppCompatFragment(),
 
     abstract val storeName: String
 
-    protected val storeInstanceKeeper by lazy { instanceKeeper() }
-    private var isStoreInit = false
+    protected val stateKeeper by lazy { stateKeeper() }
+
+    @Inject
+    lateinit var storeInstanceKeeper: InstanceKeeper
 
     /**
      * Does dependency injection.
@@ -90,12 +95,11 @@ abstract class BaseFragment<Binding : ViewDataBinding> : MvpAppCompatFragment(),
     open fun onBackPressed() {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Timber.tag("SAVE_STATE_TEST")
+            .d("Fragment onCreate")
         inject()
         super.onCreate(savedInstanceState)
     }
-
-    @Inject
-    lateinit var initInstanceKeeper: InstanceKeeper
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -105,31 +109,9 @@ abstract class BaseFragment<Binding : ViewDataBinding> : MvpAppCompatFragment(),
         }
 
         lifecycle.doOnCreate {
-            store.init(storeInstanceKeeper)
+            store.init()
         }
     }
-
-    private fun Store<*, *, *>.init(instanceKeeper: InstanceKeeper) {
-        val key = storeName
-        if (instanceKeeper.get(key = key) == null) {
-            instanceKeeper.put(key = key, instance = StoreInstance(this@init))
-            init()
-        }
-    }
-
-    inline fun <reified T : Store<*, *, *>> InstanceKeeper.getStore(): T? {
-        val key = storeName
-        return (get(key = key) as? StoreInstance<*>)?.store as T?
-    }
-
-    class StoreInstance<out T : Store<*, *, *>>(
-        val store: T
-    ) : InstanceKeeper.Instance {
-        override fun onDestroy() {
-            store.dispose()
-        }
-    }
-
 
     private fun handleCommonLabel(commonLabel: CommonLabel) {
         when (commonLabel) {
@@ -150,6 +132,10 @@ abstract class BaseFragment<Binding : ViewDataBinding> : MvpAppCompatFragment(),
             is NavigationLabel.ReplaceScreen -> router.replaceScreen(navigationLabel.screen)
         }
 
+    }
+
+    protected inline fun <reified T : Parcelable> getState(): T? {
+        return stateKeeper.consume(storeName, T::class)
     }
 
     override fun onCreateView(
@@ -173,9 +159,15 @@ abstract class BaseFragment<Binding : ViewDataBinding> : MvpAppCompatFragment(),
 
     override fun onDestroy() {
         super.onDestroy()
+        Timber.tag("SAVE_STATE_TEST")
+            .d("Fragment onDestroy")
         if (needCloseScope()) {
             release()
-            initInstanceKeeper.remove(store)
+            storeInstanceKeeper.removeStore(key = storeName)
+            Timber.tag("SAVE_STATE_TEST").d("${this::class.simpleName} NEED_TO_CLOSE_SCOPE CLOSE")
+        } else {
+            Timber.tag("SAVE_STATE_TEST")
+                .d("${this::class.simpleName} NEED_TO_CLOSE_SCOPE NOT CLOSE")
         }
     }
 

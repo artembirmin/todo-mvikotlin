@@ -37,7 +37,7 @@ abstract class TaskModule {
 
         @Provides
         @FeatureScope
-        fun provideInitInstanceKeeper(): InstanceKeeper {
+        fun provideStoreInstanceKeeper(): InstanceKeeper {
             return InstanceKeeperDispatcher()
         }
     }

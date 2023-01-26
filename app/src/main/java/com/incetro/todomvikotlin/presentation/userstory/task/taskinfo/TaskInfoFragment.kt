@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.view.View
 import com.arkivanov.essenty.lifecycle.essentyLifecycle
 import com.arkivanov.mvikotlin.core.binder.BinderLifecycleMode
+import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.incetro.todomvikotlin.R
@@ -25,6 +26,7 @@ import com.incetro.todomvikotlin.presentation.base.fragment.BaseFragment
 import com.incetro.todomvikotlin.presentation.userstory.task.di.TaskComponent
 import com.incetro.todomvikotlin.presentation.userstory.task.taskinfo.TaskInfoStore.Intent
 import com.incetro.todomvikotlin.presentation.userstory.task.taskinfo.TaskInfoStore.State
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -47,6 +49,8 @@ class TaskInfoFragment : BaseFragment<FragmentTaskInfoBinding>() {
 
     // Pull up
     private fun initMvi() {
+        Timber.tag("SAVE_STATE_TEST")
+            .d("initMvi TaskInfo store hash ${store.hashCode()}")
         val mviView = TaskInfoView(binding)
         val lifecycle = viewLifecycleOwner.essentyLifecycle()
 
@@ -64,16 +68,22 @@ class TaskInfoFragment : BaseFragment<FragmentTaskInfoBinding>() {
         reducer: TaskInfoStoreReducer,
         executor: TaskInfoStoreExecutor
     ) {
-        store = storeInstanceKeeper.getStore() as? TaskInfoStore
-            ?: object : TaskInfoStore(),
+        store = storeInstanceKeeper.getStore(key = storeName) {
+            object : TaskInfoStore(),
                 Store<Intent, State, CommonLabel> by storeFactory.createStoreSimple(
-                    name = TaskInfoStore.NAME,
+                    name = storeName,
                     initialState = State(taskId = initParams.id),
                     reducer = reducer,
                     executor = executor
                 ) {}
+                .also {
+                    stateKeeper.register(key = storeName) {
+                        Timber.tag("SAVE_STATE_TEST").d(" stateKeeper.register")
+                        it.state
+                    }
+                }
+        }
     }
-
 
     override fun onBackPressed() {
         router.exit()

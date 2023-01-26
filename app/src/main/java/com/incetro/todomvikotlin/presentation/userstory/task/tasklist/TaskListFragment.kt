@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.view.View
 import com.arkivanov.essenty.lifecycle.essentyLifecycle
 import com.arkivanov.mvikotlin.core.binder.BinderLifecycleMode
+import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.incetro.todomvikotlin.R
@@ -21,6 +22,9 @@ import com.incetro.todomvikotlin.common.mvirxjava.states
 import com.incetro.todomvikotlin.databinding.FragmentTaskListBinding
 import com.incetro.todomvikotlin.presentation.base.fragment.BaseFragment
 import com.incetro.todomvikotlin.presentation.userstory.task.di.TaskComponent
+import com.incetro.todomvikotlin.presentation.userstory.task.tasklist.TaskListStore.Intent
+import com.incetro.todomvikotlin.presentation.userstory.task.tasklist.TaskListStore.State
+import timber.log.Timber
 import javax.inject.Inject
 
 class TaskListFragment : BaseFragment<FragmentTaskListBinding>() {
@@ -35,6 +39,12 @@ class TaskListFragment : BaseFragment<FragmentTaskListBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initMvi()
+    }
+
+    private fun initMvi() {
+        Timber.tag("SAVE_STATE_TEST")
+            .d("initMvi TaskInfo store hash ${store.hashCode()}")
         val mviView = TaskListView(binding)
         val lifecycle = viewLifecycleOwner.essentyLifecycle()
 
@@ -52,15 +62,22 @@ class TaskListFragment : BaseFragment<FragmentTaskListBinding>() {
         reducer: TaskListStoreReducer,
         executor: TaskListStoreExecutor
     ) {
-        store = storeInstanceKeeper.getStore() as? TaskListStore
-            ?: object : TaskListStore(),
-                Store<TaskListStore.Intent, TaskListStore.State, CommonLabel>
+        store = storeInstanceKeeper.getStore(key = storeName) {
+            object : TaskListStore(),
+                Store<Intent, State, CommonLabel>
                 by storeFactory.createStoreSimple(
-                    name = TaskListStore.NAME,
-                    initialState = TaskListStore.State(),
+                    name = storeName,
+                    initialState = getState() ?: State(),
                     reducer = reducer,
                     executor = executor
                 ) {}
+                .also {
+                    stateKeeper.register(key = storeName) {
+                        Timber.tag("SAVE_STATE_TEST").d(" stateKeeper.register")
+                        it.state
+                    }
+                }
+        }
     }
 
     override fun onBackPressed() {

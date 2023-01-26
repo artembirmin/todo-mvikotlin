@@ -16,6 +16,10 @@ import com.incetro.todomvikotlin.presentation.userstory.task.taskinfo.TaskInfoSt
 class TaskInfoView(binding: FragmentTaskInfoBinding) :
     BaseMviView<State, Intent>() {
 
+    init {
+        binding.tvTaskName.text = ""
+    }
+
     override val renderer: ViewRenderer<State> =
         diff {
             this.diff(
