@@ -14,6 +14,7 @@ import timber.log.Timber
 class App : Application() {
 
     override fun onCreate() {
+        Timber.tag("SAVE_STATE_TEST").d("Application onCreate")
         super.onCreate()
 
         inject()
@@ -21,6 +22,22 @@ class App : Application() {
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
+    }
+
+    override fun onTerminate() {
+        super.onTerminate()
+        Timber.tag("SAVE_STATE_TEST").d("Application onTerminate")
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        Timber.tag("SAVE_STATE_TEST").d("Application onLowMemory")
+    }
+
+    override fun onTrimMemory(level: Int) {
+        super.onTrimMemory(level)
+        Timber.tag("SAVE_STATE_TEST").d("Application onTrimMemory")
+
     }
 
     private fun inject() {

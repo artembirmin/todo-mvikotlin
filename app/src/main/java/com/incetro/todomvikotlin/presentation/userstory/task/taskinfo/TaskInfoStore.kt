@@ -8,7 +8,6 @@ package com.incetro.todomvikotlin.presentation.userstory.task.taskinfo
 
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
-import com.incetro.todomvikotlin.common.di.scope.FeatureScope
 import com.incetro.todomvikotlin.common.mvibase.CommonLabel
 import com.incetro.todomvikotlin.common.mvirxjava.RxJavaExecutor
 import com.incetro.todomvikotlin.entity.task.Task
@@ -40,7 +39,6 @@ abstract class TaskInfoStore : Store<Intent, State, CommonLabel> {
     )
 }
 
-@FeatureScope
 class TaskInfoStoreReducer @Inject constructor() : Reducer<State, Message> {
     override fun State.reduce(msg: Message): State =
         when (msg) {

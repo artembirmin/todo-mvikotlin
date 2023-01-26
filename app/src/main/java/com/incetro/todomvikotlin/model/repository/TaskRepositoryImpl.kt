@@ -12,6 +12,7 @@ import com.incetro.todomvikotlin.model.database.task.TaskDao
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Single
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -33,6 +34,8 @@ class TaskRepositoryImpl @Inject constructor(
     }
 
     override fun saveNewTask(task: Task): Completable {
+        Timber.tag("SAVE_STATE_TEST")
+            .d("TaskRepositoryImpl saveNewTask hashCode ${this.hashCode()}")
         return taskDao.insert(task)
     }
 }

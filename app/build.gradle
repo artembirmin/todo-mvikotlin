@@ -18,6 +18,10 @@ android {
         dataBinding true
     }
 
+//    kapt {
+//        correctErrorTypes true
+//    }
+
     defaultConfig {
         applicationId "com.incetro.todomvikotlin"
         minSdk 24
@@ -79,6 +83,9 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:1.2.1"
     implementation "androidx.fragment:fragment-ktx:1.4.1"
 
+    def lifecycle_version = "2.5.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+
     // Cicerone
     implementation "com.github.terrakok:cicerone:7.1"
 
@@ -121,7 +128,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:4.3.1'
 
     // MVIKotlin
-    def mviKotlinVersion = '3.0.2'
+    def mviKotlinVersion = '3.1.0'
     implementation "com.arkivanov.mvikotlin:mvikotlin:$mviKotlinVersion"
     implementation "com.arkivanov.mvikotlin:mvikotlin-main:$mviKotlinVersion"
     implementation "com.arkivanov.mvikotlin:mvikotlin-logging:$mviKotlinVersion"
@@ -130,9 +137,9 @@ dependencies {
     implementation "com.arkivanov.mvikotlin:mvikotlin-extensions-reaktive:$mviKotlinVersion"
     implementation "com.arkivanov.mvikotlin:rx:$mviKotlinVersion"
     implementation "com.arkivanov.mvikotlin:utils-internal-android-debug:$mviKotlinVersion"
-
-
-    implementation 'com.arkivanov.essenty:lifecycle:0.8.0'
+    
+    implementation 'com.arkivanov.essenty:lifecycle:0.9.0'
+    implementation 'com.arkivanov.essenty:state-keeper-android:0.9.0'
 
     // Permissions
     implementation 'com.github.tbruyelle:rxpermissions:0.12'
