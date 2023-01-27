@@ -7,16 +7,17 @@
 package com.incetro.todomvikotlin.app
 
 import android.app.Application
+import com.arkivanov.mvikotlin.timetravel.server.TimeTravelServer
 import com.incetro.todomvikotlin.BuildConfig
 import com.incetro.todomvikotlin.common.di.componentmanager.ComponentsManager
 import timber.log.Timber
 
 class App : Application() {
-
+    private val timeTravelServer = TimeTravelServer()
     override fun onCreate() {
         Timber.tag("SAVE_STATE_TEST").d("Application onCreate")
         super.onCreate()
-
+        timeTravelServer.start()
         inject()
 
         if (BuildConfig.DEBUG) {

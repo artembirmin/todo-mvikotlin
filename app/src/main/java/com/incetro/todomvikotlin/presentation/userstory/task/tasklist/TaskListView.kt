@@ -13,6 +13,8 @@ import com.arkivanov.mvikotlin.core.view.ViewRenderer
 import com.incetro.todomvikotlin.databinding.FragmentTaskListBinding
 import com.incetro.todomvikotlin.presentation.userstory.task.tasklist.TaskListStore.Intent
 import com.incetro.todomvikotlin.presentation.userstory.task.tasklist.TaskListStore.State
+import com.incetro.todomvikotlin.presentation.userstory.task.tasklist.adapter.TaskListAdapter
+import com.incetro.todomvikotlin.presentation.userstory.task.tasklist.adapter.TaskViewItem
 
 
 class TaskListView(binding: FragmentTaskListBinding) :

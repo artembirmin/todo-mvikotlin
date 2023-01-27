@@ -81,7 +81,7 @@ class TaskListFragment : BaseStoreFragment<FragmentTaskListBinding>() {
     }
 
     override fun onBackPressed() {
-        router.exit()
+        closeFragment()
     }
 
     companion object {

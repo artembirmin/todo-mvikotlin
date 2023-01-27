@@ -9,6 +9,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.incetro.todomvikotlin">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name="com.incetro.todomvikotlin.app.App"
         android:allowBackup="true"

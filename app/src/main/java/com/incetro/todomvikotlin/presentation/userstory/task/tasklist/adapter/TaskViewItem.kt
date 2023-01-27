@@ -4,7 +4,7 @@
  * Created by artembirmin on 5/1/2023.
  */
 
-package com.incetro.todomvikotlin.presentation.userstory.task.tasklist
+package com.incetro.todomvikotlin.presentation.userstory.task.tasklist.adapter
 
 import com.incetro.todomvikotlin.R
 import com.incetro.todomvikotlin.databinding.ItemTaskBinding

@@ -44,6 +44,7 @@ class TaskInfoFragment : BaseStoreFragment<FragmentTaskInfoBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.toolbar.setNavigationOnClickListener { onBackPressed() }
         initMvi()
     }
 
@@ -86,7 +87,7 @@ class TaskInfoFragment : BaseStoreFragment<FragmentTaskInfoBinding>() {
     }
 
     override fun onBackPressed() {
-        router.exit()
+        closeFragment()
     }
 
     companion object {

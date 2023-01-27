@@ -136,6 +136,7 @@ dependencies {
     implementation "com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines:$mviKotlinVersion"
     implementation "com.arkivanov.mvikotlin:mvikotlin-extensions-reaktive:$mviKotlinVersion"
     implementation "com.arkivanov.mvikotlin:rx:$mviKotlinVersion"
+    implementation "com.arkivanov.mvikotlin:rx-internal:$mviKotlinVersion"
     implementation "com.arkivanov.mvikotlin:utils-internal-android-debug:$mviKotlinVersion"
     
     implementation 'com.arkivanov.essenty:lifecycle:0.9.0'
