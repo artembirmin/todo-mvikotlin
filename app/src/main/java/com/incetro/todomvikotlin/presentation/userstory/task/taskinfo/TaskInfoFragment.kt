@@ -14,7 +14,7 @@ import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.incetro.todomvikotlin.R
-import com.incetro.todomvikotlin.common.mvibase.CommonLabel
+import com.incetro.todomvikotlin.common.mvicommon.CommonLabel
 import com.incetro.todomvikotlin.common.mvirxjava.bind
 import com.incetro.todomvikotlin.common.mvirxjava.createStoreSimple
 import com.incetro.todomvikotlin.common.mvirxjava.events
@@ -34,10 +34,12 @@ class TaskInfoFragment : BaseStoreFragment<FragmentTaskInfoBinding>() {
 
     override val layoutRes = R.layout.fragment_task_info
 
-    private val initParams by lazy { getInitParams<TaskInfoFragmentInitParams>() }
+    override lateinit var view: TaskInfoView
 
     override lateinit var store: TaskInfoStore
     override val storeName = TaskInfoStore.NAME
+
+    private val initParams by lazy { getInitParams<TaskInfoFragmentInitParams>() }
 
     override fun inject() = TaskComponent.Manager.getComponent().inject(this)
     override fun release() = Unit
@@ -52,14 +54,14 @@ class TaskInfoFragment : BaseStoreFragment<FragmentTaskInfoBinding>() {
     private fun initMvi() {
         Timber.tag("SAVE_STATE_TEST")
             .d("initMvi TaskInfo store hash ${store.hashCode()}")
-        val mviView = TaskInfoView(binding)
+        view = TaskInfoView(binding)
         val lifecycle = viewLifecycleOwner.essentyLifecycle()
 
         bind(lifecycle, BinderLifecycleMode.CREATE_DESTROY) {
-            mviView.events bindTo store
+            view.events bindTo store
         }
         bind(lifecycle, BinderLifecycleMode.START_STOP) {
-            store.states bindTo mviView
+            store.states bindTo view
         }
     }
 
@@ -87,7 +89,7 @@ class TaskInfoFragment : BaseStoreFragment<FragmentTaskInfoBinding>() {
     }
 
     override fun onBackPressed() {
-        closeFragment()
+        view.onBackPressed()
     }
 
     companion object {

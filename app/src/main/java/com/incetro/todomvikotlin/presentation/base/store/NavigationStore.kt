@@ -8,7 +8,7 @@ package com.incetro.todomvikotlin.presentation.base.store
 
 import com.arkivanov.mvikotlin.core.store.Store
 import com.incetro.todomvikotlin.common.di.scope.FeatureScope
-import com.incetro.todomvikotlin.common.mvibase.NavigationLabel
+import com.incetro.todomvikotlin.common.mvicommon.NavigationLabel
 import com.incetro.todomvikotlin.common.mvirxjava.RxJavaExecutor
 import com.incetro.todomvikotlin.presentation.base.store.NavigationStore.NavigationIntent
 import javax.inject.Inject

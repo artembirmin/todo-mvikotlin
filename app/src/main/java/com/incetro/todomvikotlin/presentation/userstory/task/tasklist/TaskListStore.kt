@@ -29,6 +29,7 @@ abstract class TaskListStore : Store<Intent, TaskListStore.State, CommonLabel> {
     sealed class Intent {
         object OnAddTaskClick : Intent()
         data class OnTaskClick(val task: Task) : Intent()
+        object OnBackPressed : Intent()
     }
 
     sealed class Message {
@@ -73,6 +74,7 @@ class TaskListStoreExecutor @Inject constructor(
                     )
                 )
             )
+            is Intent.OnBackPressed -> publish(NavigationLabel.Exit)
         }
     }
 

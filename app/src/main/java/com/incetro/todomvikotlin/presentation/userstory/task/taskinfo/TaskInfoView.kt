@@ -10,14 +10,16 @@ import com.arkivanov.mvikotlin.core.utils.diff
 import com.arkivanov.mvikotlin.core.view.BaseMviView
 import com.arkivanov.mvikotlin.core.view.ViewRenderer
 import com.incetro.todomvikotlin.databinding.FragmentTaskInfoBinding
+import com.incetro.todomvikotlin.presentation.base.fragment.BackPressedHandler
 import com.incetro.todomvikotlin.presentation.userstory.task.taskinfo.TaskInfoStore.Intent
 import com.incetro.todomvikotlin.presentation.userstory.task.taskinfo.TaskInfoStore.State
 
 class TaskInfoView(binding: FragmentTaskInfoBinding) :
-    BaseMviView<State, Intent>() {
+    BaseMviView<State, Intent>(), BackPressedHandler {
 
     init {
         binding.tvTaskName.text = ""
+        binding.toolbar.setNavigationOnClickListener { onBackPressed() }
     }
 
     override val renderer: ViewRenderer<State> =
@@ -31,4 +33,8 @@ class TaskInfoView(binding: FragmentTaskInfoBinding) :
                 }
             )
         }
+
+    override fun onBackPressed() {
+        dispatch(Intent.OnBackPressed)
+    }
 }

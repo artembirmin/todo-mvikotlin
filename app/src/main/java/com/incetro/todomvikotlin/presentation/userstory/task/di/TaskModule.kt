@@ -15,7 +15,7 @@ import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import com.arkivanov.mvikotlin.timetravel.store.TimeTravelStoreFactory
 import com.incetro.todomvikotlin.BuildConfig
 import com.incetro.todomvikotlin.common.di.scope.FeatureScope
-import com.incetro.todomvikotlin.common.mvibase.NavigationLabel
+import com.incetro.todomvikotlin.common.mvicommon.NavigationLabel
 import com.incetro.todomvikotlin.model.repository.TaskRepository
 import com.incetro.todomvikotlin.model.repository.TaskRepositoryImpl
 import com.incetro.todomvikotlin.presentation.base.store.CommonNavigationStoreExecutor

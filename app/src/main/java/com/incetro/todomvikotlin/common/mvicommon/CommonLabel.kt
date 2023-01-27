@@ -4,11 +4,12 @@
  * Created by artembirmin on 5/1/2023.
  */
 
-package com.incetro.todomvikotlin.common.mvibase
+package com.incetro.todomvikotlin.common.mvicommon
 
+import com.arkivanov.mvikotlin.core.utils.JvmSerializable
 import com.github.terrakok.cicerone.Screen
 
-sealed class CommonLabel {
+sealed class CommonLabel : JvmSerializable {
     object ShowLoading : CommonLabel()
     object HideLoading : CommonLabel()
     data class ShowError(val error: Throwable) : CommonLabel()

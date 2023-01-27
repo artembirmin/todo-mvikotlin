@@ -16,48 +16,29 @@ import com.arkivanov.essenty.lifecycle.essentyLifecycle
 import com.arkivanov.essenty.statekeeper.stateKeeper
 import com.arkivanov.mvikotlin.core.binder.BinderLifecycleMode
 import com.arkivanov.mvikotlin.core.store.Store
-import com.arkivanov.mvikotlin.core.view.ViewEvents
-import com.arkivanov.mvikotlin.rx.Disposable
-import com.arkivanov.mvikotlin.rx.Observer
-import com.arkivanov.mvikotlin.rx.internal.PublishSubject
-import com.incetro.todomvikotlin.common.mvibase.CommonLabel
-import com.incetro.todomvikotlin.common.mvibase.NavigationLabel
+import com.incetro.todomvikotlin.common.mvicommon.CommonLabel
+import com.incetro.todomvikotlin.common.mvicommon.NavigationLabel
 import com.incetro.todomvikotlin.common.mvirxjava.bind
-import com.incetro.todomvikotlin.common.mvirxjava.events
 import com.incetro.todomvikotlin.common.mvirxjava.labels
-import com.incetro.todomvikotlin.presentation.base.store.NavigationStore
-import com.incetro.todomvikotlin.presentation.base.store.NavigationStore.NavigationIntent
 import com.incetro.todomvikotlin.utils.ext.mvi.removeStore
 import javax.inject.Inject
 
-abstract class BaseStoreFragment<Binding : ViewDataBinding> : BaseFragment<Binding>(),
-    ViewEvents<NavigationIntent> {
+abstract class BaseStoreFragment<Binding : ViewDataBinding> : BaseFragment<Binding>() {
 
-    abstract val store: Store<*, *, CommonLabel>
+    protected abstract val view: BackPressedHandler
 
-    abstract val storeName: String
+    protected abstract val store: Store<*, *, CommonLabel>
+
+    protected abstract val storeName: String
 
     protected val stateKeeper by lazy { stateKeeper() }
 
     @Inject
     lateinit var storeInstanceKeeper: InstanceKeeper
 
-    @Inject
-    lateinit var navigationStore: NavigationStore
-    private val navigationStoreSubject = PublishSubject<NavigationIntent>()
-    override fun events(observer: Observer<NavigationIntent>): Disposable =
-        navigationStoreSubject.subscribe(observer)
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val lifecycle = viewLifecycleOwner.essentyLifecycle()
-
-        bind(lifecycle, BinderLifecycleMode.START_STOP) {
-            this@BaseStoreFragment.events bindTo navigationStore
-        }
-        bind(lifecycle, BinderLifecycleMode.START_STOP) {
-            navigationStore.labels bindTo ::handleNavigationLabel
-        }
 
         bind(lifecycle, BinderLifecycleMode.CREATE_DESTROY) {
             store.labels bindTo ::handleCommonLabel
@@ -96,7 +77,7 @@ abstract class BaseStoreFragment<Binding : ViewDataBinding> : BaseFragment<Bindi
         storeInstanceKeeper.removeStore(key = storeName)
     }
 
-    protected fun closeFragment() {
-        navigationStoreSubject.onNext(NavigationIntent.OnBackPressed)
+    override fun onBackPressed() {
+        view.onBackPressed()
     }
 }

@@ -28,8 +28,8 @@ abstract class TaskInfoStore : Store<Intent, TaskInfoStore.State, CommonLabel> {
         val NAME = TaskInfoStore::class.simpleName!!
     }
 
-    sealed class Intent {
-
+    sealed class Intent : JvmSerializable {
+        object OnBackPressed : Intent()
     }
 
     sealed class Message {
@@ -58,11 +58,11 @@ class TaskInfoStoreExecutor @Inject constructor(
         getTask(taskId = getState().taskId)
     }
 
-//    override fun executeIntent(intent: Intent, getState: () -> State) {
-//        when (intent) {
-//            else -> {}
-//        }
-//    }
+    override fun executeIntent(intent: Intent, getState: () -> TaskInfoStore.State) {
+        when (intent) {
+            is Intent.OnBackPressed -> publish(NavigationLabel.Exit)
+        }
+    }
 
     private fun getTask(taskId: Int) {
         taskRepository.getTaskById(taskId)
