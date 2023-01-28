@@ -7,14 +7,15 @@
 package com.incetro.todomvikotlin.common.mvirxjava
 
 import com.arkivanov.mvikotlin.core.store.*
+import com.incetro.todomvikotlin.common.mvicommon.CommonAction
 
 fun <Intent : Any, Message : Any, State : Any, Label : Any> StoreFactory.createStoreSimple(
     name: String? = null,
     initialState: State,
-    executor: Executor<Intent, Unit, State, Message, Label>,
+    executor: Executor<Intent, CommonAction, State, Message, Label>,
     reducer: Reducer<State, Message>,
     autoInit: Boolean = false,
-    bootstrapper: Bootstrapper<Unit>? = SimpleBootstrapper(Unit)
+    bootstrapper: Bootstrapper<CommonAction>? = SimpleBootstrapper(CommonAction.Init)
 ): Store<Intent, State, Label> {
     return this.createStore(
         name = name,

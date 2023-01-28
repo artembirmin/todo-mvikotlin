@@ -9,7 +9,10 @@ package com.incetro.todomvikotlin.presentation.userstory.task.taskinfo
 import android.os.Parcelable
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
-import com.incetro.todomvikotlin.common.mvibase.CommonLabel
+import com.arkivanov.mvikotlin.core.utils.JvmSerializable
+import com.incetro.todomvikotlin.common.mvicommon.CommonAction
+import com.incetro.todomvikotlin.common.mvicommon.CommonLabel
+import com.incetro.todomvikotlin.common.mvicommon.NavigationLabel
 import com.incetro.todomvikotlin.common.mvirxjava.RxJavaExecutor
 import com.incetro.todomvikotlin.entity.task.Task
 import com.incetro.todomvikotlin.model.repository.TaskRepository
@@ -32,7 +35,7 @@ abstract class TaskInfoStore : Store<Intent, TaskInfoStore.State, CommonLabel> {
         object OnBackPressed : Intent()
     }
 
-    sealed class Message {
+    sealed class Message : JvmSerializable {
         data class ShowTask(val task: Task) : Message()
     }
 
@@ -40,7 +43,7 @@ abstract class TaskInfoStore : Store<Intent, TaskInfoStore.State, CommonLabel> {
     data class State(
         val taskId: Int,
         val task: Task = Task()
-    ) : Parcelable
+    ) : Parcelable, JvmSerializable
 }
 
 class TaskInfoStoreReducer @Inject constructor() : Reducer<TaskInfoStore.State, Message> {
@@ -52,8 +55,8 @@ class TaskInfoStoreReducer @Inject constructor() : Reducer<TaskInfoStore.State, 
 
 class TaskInfoStoreExecutor @Inject constructor(
     private val taskRepository: TaskRepository
-) : RxJavaExecutor<Intent, Unit, TaskInfoStore.State, Message, CommonLabel>() {
-    override fun executeAction(action: Unit, getState: () -> TaskInfoStore.State) {
+) : RxJavaExecutor<Intent, CommonAction, TaskInfoStore.State, Message, CommonLabel>() {
+    override fun executeAction(action: CommonAction, getState: () -> TaskInfoStore.State) {
         Timber.d("getTask executeAction")
         getTask(taskId = getState().taskId)
     }
