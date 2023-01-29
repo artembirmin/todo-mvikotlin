@@ -11,7 +11,6 @@ import com.arkivanov.mvikotlin.core.utils.diff
 import com.arkivanov.mvikotlin.core.view.BaseMviView
 import com.arkivanov.mvikotlin.core.view.ViewRenderer
 import com.incetro.todomvikotlin.databinding.FragmentTaskListBinding
-import com.incetro.todomvikotlin.presentation.base.fragment.BackPressedHandler
 import com.incetro.todomvikotlin.presentation.userstory.task.tasklist.TaskListStore.Intent
 import com.incetro.todomvikotlin.presentation.userstory.task.tasklist.TaskListStore.State
 import com.incetro.todomvikotlin.presentation.userstory.task.tasklist.adapter.TaskListAdapter
@@ -19,7 +18,7 @@ import com.incetro.todomvikotlin.presentation.userstory.task.tasklist.adapter.Ta
 
 
 class TaskListView(binding: FragmentTaskListBinding) :
-    BaseMviView<State, Intent>(), BackPressedHandler {
+    BaseMviView<State, Intent>() {
 
     private val taskListAdapter by lazy { TaskListAdapter() }
 
@@ -47,8 +46,4 @@ class TaskListView(binding: FragmentTaskListBinding) :
                 }
             )
         }
-
-    override fun onBackPressed() {
-        dispatch(Intent.OnBackPressed)
-    }
 }

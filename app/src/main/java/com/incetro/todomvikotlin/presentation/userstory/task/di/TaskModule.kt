@@ -18,8 +18,8 @@ import com.incetro.todomvikotlin.common.di.scope.FeatureScope
 import com.incetro.todomvikotlin.common.mvicommon.NavigationLabel
 import com.incetro.todomvikotlin.model.repository.TaskRepository
 import com.incetro.todomvikotlin.model.repository.TaskRepositoryImpl
+import com.incetro.todomvikotlin.presentation.base.store.BackPressedStore
 import com.incetro.todomvikotlin.presentation.base.store.CommonNavigationStoreExecutor
-import com.incetro.todomvikotlin.presentation.base.store.NavigationStore
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -50,11 +50,11 @@ abstract class TaskModule {
         fun provideCommonNavigationStore(
             storeFactory: StoreFactory,
             commonNavigationStoreExecutor: CommonNavigationStoreExecutor
-        ): NavigationStore {
-            return object : NavigationStore(),
-                Store<NavigationStore.NavigationIntent, Unit, NavigationLabel>
+        ): BackPressedStore {
+            return object : BackPressedStore(),
+                Store<BackPressedStore.BackPressedIntent, Unit, NavigationLabel.Exit>
                 by storeFactory.create(
-                    name = NavigationStore.NAME,
+                    name = BackPressedStore.NAME,
                     executorFactory = { commonNavigationStoreExecutor },
                     initialState = Unit
                 ) {}

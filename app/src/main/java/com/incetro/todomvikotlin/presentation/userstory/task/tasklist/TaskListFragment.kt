@@ -31,8 +31,6 @@ class TaskListFragment : BaseStoreFragment<FragmentTaskListBinding>() {
 
     override val layoutRes = R.layout.fragment_task_list
 
-    override lateinit var view: TaskListView
-
     override lateinit var store: TaskListStore
     override val storeName = TaskListStore.NAME
 
@@ -46,8 +44,8 @@ class TaskListFragment : BaseStoreFragment<FragmentTaskListBinding>() {
 
     private fun initMvi() {
         Timber.tag("SAVE_STATE_TEST")
-            .d("initMvi TaskInfo store hash ${store.hashCode()}")
-        view = TaskListView(binding)
+            .d("initMvi TaskList store hash ${store.hashCode()}")
+        val view = TaskListView(binding)
         val lifecycle = viewLifecycleOwner.essentyLifecycle()
 
         bind(lifecycle, BinderLifecycleMode.CREATE_DESTROY) {
@@ -56,6 +54,12 @@ class TaskListFragment : BaseStoreFragment<FragmentTaskListBinding>() {
         bind(lifecycle, BinderLifecycleMode.START_STOP) {
             store.states bindTo view
         }
+
+        subscribeOnBackPressedLabels(
+            lifecycle = lifecycle,
+            store = store,
+            mapper = { Intent.OnBackPressed }
+        )
     }
 
     @Inject
