@@ -9,11 +9,12 @@ package com.incetro.todomvikotlin.common.navigation
 import android.os.Bundle
 import android.os.Parcelable
 import androidx.fragment.app.Fragment
+import com.arkivanov.mvikotlin.core.utils.JvmSerializable
 
 /**
  * Wraps parameters for fragment initialization. Saves in [Fragment.mArguments].
  */
-interface InitParams : Parcelable
+interface InitParams : Parcelable, JvmSerializable
 
 /**
  * Saves init params in [bundle].

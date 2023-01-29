@@ -10,6 +10,7 @@ import android.os.Parcelable
 import androidx.annotation.ColorRes
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.arkivanov.mvikotlin.core.utils.JvmSerializable
 import com.incetro.todomvikotlin.entity.task.Task.Companion.TABLE_NAME
 import kotlinx.parcelize.Parcelize
 
@@ -24,7 +25,7 @@ data class Task(
     val attemptsMadeCount: Int = 0,
     val attemptsRequiredCount: Int = 0,
     @ColorRes val color: Int = 0
-) : Parcelable {
+) : Parcelable, JvmSerializable {
     companion object {
         const val TABLE_NAME = "task"
     }

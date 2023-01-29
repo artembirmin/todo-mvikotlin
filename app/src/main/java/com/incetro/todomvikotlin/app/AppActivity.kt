@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.github.terrakok.cicerone.Navigator
 import com.github.terrakok.cicerone.NavigatorHolder
 import com.github.terrakok.cicerone.androidx.AppNavigator
+import com.incetro.todomvikotlin.BuildConfig
 import com.incetro.todomvikotlin.R
 import com.incetro.todomvikotlin.common.di.activity.ActivityComponent
 import com.incetro.todomvikotlin.presentation.base.fragment.BaseFragment
@@ -46,7 +47,13 @@ class AppActivity : AppCompatActivity() {
         )
         inject()
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.layout_container)
+        setContentView(
+            if (BuildConfig.DEBUG) {
+                R.layout.layout_container_debug
+            } else {
+                R.layout.layout_container
+            }
+        )
 
         if (savedInstanceState == null) {
             appLauncher.start()

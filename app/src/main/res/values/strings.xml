@@ -10,4 +10,11 @@
     <string name="demo_hello_world">Hello world</string>
     <string name="task_list_screen_title">Tasks</string>
     <string name="task_info_title">Task</string>
+
+    <string name="time_travel_serialize_error">Error serializing time travel events</string>
+    <string name="time_travel_deserialize_error">Error deserializing time travel events</string>
+    <string name="time_travel_clipboard_empty">Clipboard does not contain any text</string>
+    <string name="time_travel_export_subject">MVIKotlin time travel events</string>
+    <string name="time_travel_export_chooser_title">MVIKotlin time travel</string>
+
 </resources>
