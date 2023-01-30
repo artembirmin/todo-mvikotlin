@@ -46,6 +46,8 @@ abstract class BaseStoreFragment<Binding : ViewDataBinding> : BaseFragment<Bindi
     @Inject
     lateinit var backPressedStore: BackPressedStore
     private val backPressedObservable = PublishSubject<BackPressedIntent>()
+    private var hasBackPressedSubscribers = false
+
     override fun events(observer: Observer<BackPressedIntent>): Disposable =
         backPressedObservable.subscribe(observer)
 
@@ -53,11 +55,9 @@ abstract class BaseStoreFragment<Binding : ViewDataBinding> : BaseFragment<Bindi
         super.onViewCreated(view, savedInstanceState)
         val lifecycle = viewLifecycleOwner.essentyLifecycle()
 
-        bind(lifecycle, BinderLifecycleMode.CREATE_DESTROY) {
+        lifecycle.bind(BinderLifecycleMode.CREATE_DESTROY) {
             this@BaseStoreFragment.events bindTo backPressedStore
-        }
-
-        bind(lifecycle, BinderLifecycleMode.CREATE_DESTROY) {
+            backPressedStore.labels.filter { hasBackPressedSubscribers.not() } bindTo ::handleNavigationLabel
             store.labels bindTo ::handleCommonLabel
         }
 
@@ -70,14 +70,14 @@ abstract class BaseStoreFragment<Binding : ViewDataBinding> : BaseFragment<Bindi
         }
     }
 
-    protected open fun <Intent : Any> subscribeOnBackPressedLabels(
-        lifecycle: Lifecycle,
+    protected fun <Intent : Any> Lifecycle.subscribeOnBackPressedLabels(
         store: Store<Intent, *, *>,
         mapper: (NavigationLabel.Exit) -> Intent
     ) {
-        lifecycle.bind(BinderLifecycleMode.CREATE_DESTROY) {
+        this.bind(BinderLifecycleMode.CREATE_DESTROY) {
             backPressedStore.labels.map(mapper) bindTo store
         }
+        hasBackPressedSubscribers = true
     }
 
     private fun handleCommonLabel(commonLabel: CommonLabel) {

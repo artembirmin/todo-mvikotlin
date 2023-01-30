@@ -48,6 +48,15 @@ fun bind(
     bind(builder)
         .attachTo(lifecycle, mode)
 
+
+@JvmName("bindExt")
+fun Lifecycle.bind(
+    mode: BinderLifecycleMode,
+    builder: RxJavaBindingsBuilder.() -> Unit
+): Binder {
+    return bind(this, mode, builder)
+}
+
 interface RxJavaBindingsBuilder {
 
     /**

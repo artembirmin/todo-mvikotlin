@@ -48,25 +48,26 @@ class TaskInfoFragment : BaseStoreFragment<FragmentTaskInfoBinding>() {
         initMvi()
     }
 
-    // Pull up
+    //TODO Pull up
     private fun initMvi() {
         Timber.tag("SAVE_STATE_TEST")
             .d("initMvi TaskInfo store hash ${store.hashCode()}")
         val view = TaskInfoView(binding = binding, backPressedListener = ::onBackPressed)
         val lifecycle = viewLifecycleOwner.essentyLifecycle()
 
-        bind(lifecycle, BinderLifecycleMode.CREATE_DESTROY) {
-            view.events bindTo store
-        }
-        bind(lifecycle, BinderLifecycleMode.START_STOP) {
-            store.states bindTo view
-        }
+        with(lifecycle) {
+            bind(BinderLifecycleMode.CREATE_DESTROY) {
+                view.events bindTo store
+            }
+            bind(BinderLifecycleMode.START_STOP) {
+                store.states bindTo view
+            }
 
-        subscribeOnBackPressedLabels(
-            lifecycle = lifecycle,
-            store = store,
-            mapper = { Intent.OnBackPressed }
-        )
+            subscribeOnBackPressedLabels(
+                store = store,
+                mapper = { Intent.OnBackPressed }
+            )
+        }
     }
 
     @Inject
